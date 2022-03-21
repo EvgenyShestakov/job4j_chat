@@ -10,11 +10,13 @@ import java.util.Optional;
 @Repository
 public interface PersonRepository extends CrudRepository<Person, Long> {
     @Override
-    @EntityGraph(attributePaths = {"role", "rooms"})
+    @EntityGraph(attributePaths = "role")
     Iterable<Person> findAll();
 
     @Override
-    @EntityGraph(attributePaths = {"role", "rooms"})
+    @EntityGraph(attributePaths = "role")
     Optional<Person> findById(Long id);
+
+    Person findPersonByUsername(String username);
 
 }

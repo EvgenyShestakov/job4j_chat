@@ -1,8 +1,6 @@
 package ru.job4j.chat.model;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "person")
@@ -11,7 +9,7 @@ public class Person {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private String name;
+    private String username;
 
     private String login;
 
@@ -23,15 +21,6 @@ public class Person {
     @JoinColumn(name = "role_id")
     private Role role;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "person_room", joinColumns = @JoinColumn(name = "person_id"),
-            inverseJoinColumns = @JoinColumn(name = "room_id"))
-    private List<Room> rooms = new ArrayList<>();
-
-    public void addRoom(Room room) {
-    rooms.add(room);
-    }
-
     public int getId() {
         return id;
     }
@@ -40,12 +29,12 @@ public class Person {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String name) {
+        this.username = name;
     }
 
     public String getLogin() {
@@ -78,13 +67,5 @@ public class Person {
 
     public void setRole(Role role) {
         this.role = role;
-    }
-
-    public List<Room> getRooms() {
-        return rooms;
-    }
-
-    public void setRooms(List<Room> rooms) {
-        this.rooms = rooms;
     }
 }

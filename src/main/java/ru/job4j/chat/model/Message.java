@@ -11,7 +11,7 @@ public class Message {
 
     private String body;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "person_id")
     private Person person;
 

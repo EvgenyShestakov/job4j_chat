@@ -16,8 +16,17 @@ public class Room {
     @OneToMany(fetch = FetchType.LAZY)
     private List<Message> messages = new ArrayList<>();
 
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "room_person", joinColumns = @JoinColumn(name = "room_id"),
+            inverseJoinColumns = @JoinColumn(name = "person_id"))
+    private List<Person> people = new ArrayList<>();
+
     public void addMessage(Message message) {
-     messages.add(message);
+        messages.add(message);
+    }
+
+    public void addPerson(Person person) {
+        people.add(person);
     }
 
     public int getId() {
@@ -43,4 +52,14 @@ public class Room {
     public void setMessages(List<Message> messages) {
         this.messages = messages;
     }
+
+    public List<Person> getPeople() {
+        return people;
+    }
+
+    public void setPeople(List<Person> people) {
+        this.people = people;
+    }
 }
+
+

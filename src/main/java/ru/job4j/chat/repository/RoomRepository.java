@@ -8,11 +8,11 @@ import java.util.Optional;
 
 public interface RoomRepository extends CrudRepository<Room, Long> {
     @Override
-    @EntityGraph(attributePaths = "messages")
+    @EntityGraph(attributePaths = {"messages", "people"})
     Iterable<Room> findAll();
 
     @Override
-    @EntityGraph(attributePaths = "messages")
+    @EntityGraph(attributePaths = {"messages", "people"})
     Optional<Room> findById(Long id);
 
 }
