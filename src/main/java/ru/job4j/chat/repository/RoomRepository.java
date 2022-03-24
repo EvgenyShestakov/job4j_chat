@@ -6,13 +6,13 @@ import ru.job4j.chat.model.Room;
 
 import java.util.Optional;
 
-public interface RoomRepository extends CrudRepository<Room, Long> {
+public interface RoomRepository extends CrudRepository<Room, Integer> {
     @Override
     @EntityGraph(attributePaths = {"messages", "people"})
     Iterable<Room> findAll();
 
     @Override
     @EntityGraph(attributePaths = {"messages", "people"})
-    Optional<Room> findById(Long id);
+    Optional<Room> findById(Integer id);
 
 }

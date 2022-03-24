@@ -30,7 +30,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public Optional<Person> findById(long id) {
+    public Optional<Person> findById(int id) {
         return personRep.findById(id);
     }
 

@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface PersonService extends UserDetailsService {
     Collection<Person> findAll();
 
-    Optional<Person> findById(long id);
+    Optional<Person> findById(int id);
 
     Person save(Person person);
 

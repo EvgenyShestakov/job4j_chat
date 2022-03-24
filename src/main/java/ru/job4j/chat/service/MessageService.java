@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface MessageService {
     Collection<Message> findAll();
 
-    Optional<Message> findById(long id);
+    Optional<Message> findById(int id);
 
     Message save(Message message);
 

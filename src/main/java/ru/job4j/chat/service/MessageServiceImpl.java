@@ -25,7 +25,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public Optional<Message> findById(long id) {
+    public Optional<Message> findById(int id) {
         return messageRepository.findById(id);
     }
 

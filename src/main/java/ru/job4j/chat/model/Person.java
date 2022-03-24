@@ -11,8 +11,6 @@ public class Person {
 
     private String username;
 
-    private String login;
-
     private String password;
 
     private String email;
@@ -35,14 +33,6 @@ public class Person {
 
     public void setUsername(String name) {
         this.username = name;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
     }
 
     public String getPassword() {

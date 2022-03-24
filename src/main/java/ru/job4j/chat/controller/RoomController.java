@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.chat.model.Message;
 import ru.job4j.chat.model.Person;
 import ru.job4j.chat.model.Room;
@@ -44,19 +45,25 @@ public class RoomController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Room> findById(@PathVariable int id) {
-        var person = service.findById(id);
-        return new ResponseEntity<>(person.orElse(new Room()),
-                person.isPresent() ? HttpStatus.OK : HttpStatus.NOT_FOUND
-        );
+        Room room = service.findById(id).orElseThrow(()
+                -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "Room is not found."));
+        return new ResponseEntity<>(room, HttpStatus.OK);
     }
 
     @PostMapping("/")
     public ResponseEntity<Room> create(@RequestBody Room room) {
+        if (room.getName() == null) {
+            throw new NullPointerException("Room name must not be empty");
+        }
         return new ResponseEntity<>(service.save(room), HttpStatus.CREATED);
     }
 
     @PutMapping("/")
     public ResponseEntity<Void> update(@RequestBody Room room) {
+        if (room.getName() == null) {
+            throw new NullPointerException("Room name must not be empty");
+        }
         service.save(room);
         return ResponseEntity.ok().build();
     }
@@ -70,7 +77,7 @@ public class RoomController {
     }
 
     @GetMapping("/person")
-    public List<Person> findAllRooms() {
+    public List<Person> findAllPeople() {
         return rest.exchange(
                 API_PERSON,
                 HttpMethod.GET, null, new ParameterizedTypeReference<List<Person>>() { }
@@ -78,12 +85,12 @@ public class RoomController {
     }
 
     @GetMapping("/person/{id}")
-    public Person findRoomById(@PathVariable int id) {
+    public Person findPersonById(@PathVariable int id) {
         return rest.getForObject(API_ID_PERSON, Person.class, id);
     }
 
     @PostMapping("/person")
-    public ResponseEntity<Person> createRoom(@RequestBody Person person) {
+    public ResponseEntity<Person> createPerson(@RequestBody Person person) {
         Person rsl = rest.postForObject(API_PERSON, person, Person.class);
         return new ResponseEntity<>(
                 rsl,
@@ -92,13 +99,13 @@ public class RoomController {
     }
 
     @PutMapping("/person")
-    public ResponseEntity<Void> updateRoom(@RequestBody Person person) {
+    public ResponseEntity<Void> updatePerson(@RequestBody Person person) {
         rest.put(API_PERSON, person);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/person/{id}")
-    public ResponseEntity<Void> deleteRoom(@PathVariable int id) {
+    public ResponseEntity<Void> deletePerson(@PathVariable int id) {
         rest.delete(API_ID_PERSON, id);
         return ResponseEntity.ok().build();
     }

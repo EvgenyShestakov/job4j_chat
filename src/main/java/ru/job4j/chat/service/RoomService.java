@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface RoomService {
     Collection<Room> findAll();
 
-    Optional<Room> findById(long id);
+    Optional<Room> findById(int id);
 
     Room save(Room room);
 

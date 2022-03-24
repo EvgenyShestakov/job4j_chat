@@ -8,14 +8,14 @@ import ru.job4j.chat.model.Person;
 import java.util.Optional;
 
 @Repository
-public interface PersonRepository extends CrudRepository<Person, Long> {
+public interface PersonRepository extends CrudRepository<Person, Integer> {
     @Override
     @EntityGraph(attributePaths = "role")
     Iterable<Person> findAll();
 
     @Override
     @EntityGraph(attributePaths = "role")
-    Optional<Person> findById(Long id);
+    Optional<Person> findById(Integer id);
 
     Person findPersonByUsername(String username);
 

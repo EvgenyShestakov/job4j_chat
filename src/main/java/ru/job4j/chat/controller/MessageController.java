@@ -3,6 +3,7 @@ package ru.job4j.chat.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.chat.model.Message;
 import ru.job4j.chat.service.MessageService;
 
@@ -28,19 +29,25 @@ public class MessageController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Message> findById(@PathVariable int id) {
-        var person = service.findById(id);
-        return new ResponseEntity<>(person.orElse(new Message()),
-                person.isPresent() ? HttpStatus.OK : HttpStatus.NOT_FOUND
-        );
+        Message message = service.findById(id).orElseThrow(()
+                -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "Message is not found."));
+    return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
     @PostMapping("/")
     public ResponseEntity<Message> create(@RequestBody Message message) {
+        if (message.getBody() == null) {
+            throw new NullPointerException("Message body must not be empty");
+        }
         return new ResponseEntity<>(service.save(message), HttpStatus.CREATED);
     }
 
     @PutMapping("/")
     public ResponseEntity<Void> update(@RequestBody Message message) {
+        if (message.getBody() == null) {
+            throw new NullPointerException("Message body must not be empty");
+        }
         service.save(message);
         return ResponseEntity.ok().build();
     }
