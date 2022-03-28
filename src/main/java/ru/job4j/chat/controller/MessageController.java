@@ -1,6 +1,7 @@
 package ru.job4j.chat.controller;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -21,10 +22,11 @@ public class MessageController {
     }
 
     @GetMapping("/")
-    public List<Message> findAll() {
-        return StreamSupport.stream(
+    public ResponseEntity<List<Message>> findAll() {
+        List<Message> messages = StreamSupport.stream(
                 this.service.findAll().spliterator(), false
         ).collect(Collectors.toList());
+        return new ResponseEntity<>(messages, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
