@@ -18,6 +18,12 @@ public class Message {
     public Message() {
     }
 
+    public Message(int id, String body, Person person) {
+        this.id = id;
+        this.body = body;
+        this.person = person;
+    }
+
     public Message(String body) {
         this.body = body;
     }

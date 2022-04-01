@@ -16,12 +16,20 @@ public class Room {
     private String name;
 
     @OneToMany(fetch = FetchType.LAZY)
-    private List<Message> messages = new ArrayList<>();
+    private List<Message> messages;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "room_person", joinColumns = @JoinColumn(name = "room_id"),
             inverseJoinColumns = @JoinColumn(name = "person_id"))
-    private Set<Person> people = new HashSet<>();
+    private Set<Person> people;
+
+    public Room() {
+    }
+
+    public Room(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
     public void addMessage(Message message) {
         messages.add(message);

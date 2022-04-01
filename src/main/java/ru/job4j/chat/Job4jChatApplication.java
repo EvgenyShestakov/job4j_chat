@@ -8,7 +8,6 @@ import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 public class Job4jChatApplication {
-
     @Bean
     public RestTemplate getTemplate() {
         return new RestTemplate();

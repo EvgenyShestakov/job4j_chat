@@ -7,11 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
+import ru.job4j.chat.dto.RoomDTO;
 import ru.job4j.chat.model.Message;
 import ru.job4j.chat.model.Person;
 import ru.job4j.chat.model.Room;
 import ru.job4j.chat.service.RoomService;
-
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -74,6 +74,15 @@ public class RoomController {
        room.setId(id);
         this.service.delete(room);
         return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/")
+    public ResponseEntity<Room> patch(@RequestBody RoomDTO roomDTO) {
+        if (roomDTO.getName() == null) {
+            throw new NullPointerException("Room name must not be empty");
+        }
+        Room room = new Room(roomDTO.getId(), roomDTO.getName());
+        return new ResponseEntity<>(service.save(room), HttpStatus.OK);
     }
 
     @GetMapping("/person")

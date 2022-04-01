@@ -6,10 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import ru.job4j.chat.dto.PersonDTO;
 import ru.job4j.chat.model.Person;
 import ru.job4j.chat.model.Role;
-import ru.job4j.chat.model.Room;
 import ru.job4j.chat.service.PersonService;
+import ru.job4j.chat.service.RoleService;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -21,15 +22,18 @@ import java.util.stream.StreamSupport;
 @RestController
 @RequestMapping("/person")
 public class PersonController {
-    private final PersonService service;
+    private final PersonService personService;
+
+    private final RoleService roleService;
 
     private final ObjectMapper objectMapper;
 
     private final BCryptPasswordEncoder encoder;
 
-    public PersonController(PersonService service, ObjectMapper objectMapper,
-                            BCryptPasswordEncoder encoder) {
-        this.service = service;
+    public PersonController(PersonService personService, RoleService roleService,
+                            ObjectMapper objectMapper, BCryptPasswordEncoder encoder) {
+        this.personService = personService;
+        this.roleService = roleService;
         this.objectMapper = objectMapper;
         this.encoder = encoder;
     }
@@ -37,13 +41,13 @@ public class PersonController {
     @GetMapping("/")
     public List<Person> findAll() {
         return StreamSupport.stream(
-                this.service.findAll().spliterator(), false
+                this.personService.findAll().spliterator(), false
         ).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Person> findById(@PathVariable int id) {
-        Person person = service.findById(id).orElseThrow(()
+        Person person = personService.findById(id).orElseThrow(()
                 -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                 "Person is not found."));
         return new ResponseEntity<>(person, HttpStatus.OK);
@@ -56,13 +60,13 @@ public class PersonController {
             throw new IllegalArgumentException("Invalid mailing address");
         }
         person.setPassword(encoder.encode(person.getPassword()));
-        return new ResponseEntity<>(service.save(person), HttpStatus.CREATED);
+        return new ResponseEntity<>(personService.save(person), HttpStatus.CREATED);
     }
 
     @PutMapping("/")
     public ResponseEntity<Void> update(@RequestBody Person person) {
         isNull(person);
-        service.save(person);
+        personService.save(person);
         return ResponseEntity.ok().build();
     }
 
@@ -70,8 +74,21 @@ public class PersonController {
     public ResponseEntity<Void> delete(@PathVariable int id) {
         Person person = new Person();
         person.setId(id);
-        this.service.delete(person);
+        this.personService.delete(person);
         return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/")
+    public ResponseEntity<Person> patch(@RequestBody PersonDTO personDTO) {
+        if (personDTO.getUsername() == null || personDTO.getPassword() == null
+                || personDTO.getEmail() == null) {
+            throw new NullPointerException("Fields must not be empty");
+        }
+        Role role = roleService.findById(personDTO.getRoleID())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Person person = new Person(personDTO.getId(), personDTO.getUsername(),
+                personDTO.getPassword(), personDTO.getEmail(), role);
+        return new ResponseEntity<>(personService.save(person), HttpStatus.OK);
     }
 
     @ExceptionHandler(value = {IllegalArgumentException.class})
