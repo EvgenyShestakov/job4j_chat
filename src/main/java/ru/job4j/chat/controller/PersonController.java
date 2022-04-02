@@ -4,21 +4,26 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.chat.dto.PersonDTO;
+import ru.job4j.chat.exeption.Operation;
 import ru.job4j.chat.model.Person;
 import ru.job4j.chat.model.Role;
 import ru.job4j.chat.service.PersonService;
 import ru.job4j.chat.service.RoleService;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+@Validated
 @RestController
 @RequestMapping("/person")
 public class PersonController {
@@ -54,7 +59,8 @@ public class PersonController {
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<Person> signUp(@RequestBody Person person) {
+    @Validated(Operation.OnCreate.class)
+    public ResponseEntity<Person> signUp(@Valid @RequestBody Person person) {
         isNull(person);
         if (person.getEmail().endsWith("@gmail.com")) {
             throw new IllegalArgumentException("Invalid mailing address");
@@ -64,7 +70,8 @@ public class PersonController {
     }
 
     @PutMapping("/")
-    public ResponseEntity<Void> update(@RequestBody Person person) {
+    @Validated(Operation.OnUpdate.class)
+    public ResponseEntity<Void> update(@Valid @RequestBody Person person) {
         isNull(person);
         personService.save(person);
         return ResponseEntity.ok().build();
@@ -79,7 +86,7 @@ public class PersonController {
     }
 
     @PatchMapping("/")
-    public ResponseEntity<Person> patch(@RequestBody PersonDTO personDTO) {
+    public ResponseEntity<Person> patch(@Valid @RequestBody PersonDTO personDTO) {
         if (personDTO.getUsername() == null || personDTO.getPassword() == null
                 || personDTO.getEmail() == null) {
             throw new NullPointerException("Fields must not be empty");

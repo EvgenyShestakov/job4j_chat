@@ -1,10 +1,17 @@
 package ru.job4j.chat.dto;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class MessageDTO {
+    @NotNull(message = "Id must be non null")
     private int id;
 
+    @NotBlank(message = "Body must be not empty")
     private String body;
 
+    @Min(value = 1, message = "Year must be more than 0")
     private int personId;
 
     public int getId() {

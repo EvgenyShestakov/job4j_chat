@@ -2,18 +2,23 @@ package ru.job4j.chat.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.chat.dto.MessageDTO;
+import ru.job4j.chat.exeption.Operation;
 import ru.job4j.chat.model.Message;
 import ru.job4j.chat.model.Person;
 import ru.job4j.chat.service.MessageService;
 import ru.job4j.chat.service.PersonService;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+@Validated
 @RestController
 @RequestMapping("/message")
 public class MessageController {
@@ -42,7 +47,8 @@ public class MessageController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Message> create(@RequestBody Message message) {
+    @Validated(Operation.OnCreate.class)
+    public ResponseEntity<Message> create(@Valid @RequestBody Message message) {
         if (message.getBody() == null) {
             throw new NullPointerException("Message body must not be empty");
         }
@@ -50,7 +56,8 @@ public class MessageController {
     }
 
     @PutMapping("/")
-    public ResponseEntity<Void> update(@RequestBody Message message) {
+    @Validated(Operation.OnUpdate.class)
+    public ResponseEntity<Void> update(@Valid @RequestBody Message message) {
         if (message.getBody() == null) {
             throw new NullPointerException("Message body must not be empty");
         }
@@ -67,7 +74,7 @@ public class MessageController {
     }
 
     @PatchMapping("/")
-    public ResponseEntity<Message> patch(@RequestBody MessageDTO messageDTO) {
+    public ResponseEntity<Message> patch(@Valid @RequestBody MessageDTO messageDTO) {
         if (messageDTO.getBody() == null) {
             throw new NullPointerException("Message body must not be empty");
         }

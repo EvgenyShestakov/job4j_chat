@@ -1,8 +1,13 @@
 package ru.job4j.chat.dto;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class RoomDTO {
+    @NotNull(message = "Id must be non null")
     private int id;
 
+    @NotBlank(message = "Name must be not empty")
     private String name;
 
     public int getId() {

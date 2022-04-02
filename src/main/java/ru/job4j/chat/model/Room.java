@@ -1,6 +1,10 @@
 package ru.job4j.chat.model;
 
+import ru.job4j.chat.exeption.Operation;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -11,14 +15,16 @@ import java.util.Set;
 public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @NotNull(message = "Id must be non null", groups = Operation.OnUpdate.class)
     private int id;
 
+    @NotBlank(message = "Name must be not empty")
     private String name;
 
     @OneToMany(fetch = FetchType.LAZY)
     private List<Message> messages;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(name = "room_person", joinColumns = @JoinColumn(name = "room_id"),
             inverseJoinColumns = @JoinColumn(name = "person_id"))
     private Set<Person> people;
