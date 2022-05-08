@@ -16,7 +16,6 @@ import ru.job4j.chat.service.RoleService;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;

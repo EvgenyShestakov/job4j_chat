@@ -13,7 +13,6 @@ import ru.job4j.chat.service.MessageService;
 import ru.job4j.chat.service.PersonService;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
